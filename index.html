@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aroma & Mix - Menú Digital</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Importando fuente Fredoka para el estilo amigable y bold -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            brand: ['Fredoka', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              bone: '#F4F1EA',      // Fondo Hueso
+              dark: '#3E2723',      // Café Oscuro (Textos principales)
+              accent: '#D87A51',    // Terracota / Caramelo (Botones y acentos)
+              card: '#EADBC8',      // Contenedor suave estilo pergamino/crema
+              warm: '#795548',      // Marrón secundario
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    body { font-family: 'Fredoka', sans-serif; }
+  </style>
+</head>
+<body class="bg-brand-bone text-brand-dark pb-24 lg:pb-12 min-h-screen">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-brand-bone/95 backdrop-blur-md border-b border-brand-warm/20 px-4 lg:px-12 py-4 flex items-center justify-between shadow-sm">
+    <div class="flex items-center space-x-3">
+      <i class="fa-solid fa-mug-saucer text-2xl lg:text-3xl text-brand-accent"></i>
+      <h1 class="text-2xl lg:text-3xl font-bold tracking-tight text-brand-dark">Aroma & Mix</h1>
+    </div>
+    
+    <!-- Botón Carrito en Móvil -->
+    <button onclick="toggleCart()" class="lg:hidden relative p-2.5 bg-brand-card rounded-full hover:bg-brand-card/80 transition border border-brand-accent/40 shadow-sm">
+      <i class="fa-solid fa-shopping-bag text-lg text-brand-dark"></i>
+      <span id="cart-badge-mobile" class="absolute -top-1 -right-1 bg-brand-accent text-white font-extrabold text-xs w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+    </button>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="max-w-7xl mx-auto px-4 lg:px-8 py-6 lg:py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      
+      <!-- COLUMNA IZQUIERDA Y CENTRAL: PROMOS, MENÚ Y FAQ -->
+      <div class="lg:col-span-2 space-y-8">
+
+        <!-- HERO / PROMOCIÓN DEL DÍA -->
+        <section class="bg-brand-card border border-brand-warm/30 rounded-3xl p-5 lg:p-8 shadow-md relative overflow-hidden">
+          <div class="flex justify-between items-center mb-4">
+            <span class="bg-brand-accent text-white text-xs lg:text-sm font-bold px-3 py-1 lg:px-4 lg:py-1.5 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-fire"></i> Promo del Día
+            </span>
+            <span class="text-xs lg:text-sm text-brand-warm font-semibold">-30% OFF</span>
+          </div>
+          
+          <div class="flex flex-col sm:flex-row items-center gap-5">
+            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600" alt="Combo Mañanero" class="w-full sm:w-36 h-36 lg:w-44 lg:h-44 object-cover rounded-2xl shadow-md border border-brand-warm/20">
+            <div class="flex-1 text-center sm:text-left">
+              <h2 class="text-2xl lg:text-3xl font-bold text-brand-dark">Combo Mañanero</h2>
+              <p class="text-xs lg:text-sm text-brand-warm mt-2 leading-relaxed font-normal">Cappuccino Italiano recién hecho acompañado de un Croissant artesanal de mantequilla.</p>
+              <div class="flex items-center justify-center sm:justify-start gap-3 mt-3">
+                <span class="text-2xl lg:text-3xl font-bold text-brand-accent">$8.50</span>
+                <span class="text-sm lg:text-base text-brand-warm/70 line-through">$11.50</span>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="addPromoToCart()" class="mt-5 w-full py-3 lg:py-3.5 bg-brand-accent hover:bg-brand-accent/90 text-white font-bold text-sm lg:text-base rounded-2xl flex items-center justify-center gap-2 shadow transition">
+            <i class="fa-solid fa-cart-plus"></i> Agregar Promo al Carrito
+          </button>
+        </section>
+
+        <!-- FILTROS POR CATEGORÍA -->
+        <section class="flex gap-3 overflow-x-auto no-scrollbar py-1">
+          <button onclick="filterCategory('all', this)" class="cat-btn px-5 py-2.5 bg-brand-accent text-white font-bold text-sm lg:text-base rounded-full whitespace-nowrap shadow-sm">Todas</button>
+          <button onclick="filterCategory('caliente', this)" class="cat-btn px-5 py-2.5 bg-brand-card text-brand-dark font-medium text-sm lg:text-base rounded-full whitespace-nowrap border border-brand-warm/30 hover:bg-brand-card/80 flex items-center gap-2">
+            <i class="fa-solid fa-mug-hot text-brand-accent"></i> Calientes
+          </button>
+          <button onclick="filterCategory('fria', this)" class="cat-btn px-5 py-2.5 bg-brand-card text-brand-dark font-medium text-sm lg:text-base rounded-full whitespace-nowrap border border-brand-warm/30 hover:bg-brand-card/80 flex items-center gap-2">
+            <i class="fa-solid fa-snowflake text-brand-accent"></i> Frías
+          </button>
+        </section>
+
+        <!-- CATÁLOGO DE BEBIDAS -->
+        <section>
+          <h3 class="text-2xl font-bold mb-4 flex items-center gap-2 text-brand-dark">
+            <i class="fa-solid fa-martini-glass-citrus text-brand-accent"></i> Menú de Bebidas
+          </h3>
+          <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+            <!-- Renderizado dinámico con JS -->
+          </div>
+        </section>
+
+        <!-- PREGUNTAS FRECUENTES (FAQ) -->
+        <section class="bg-brand-card/50 rounded-3xl p-5 lg:p-6 border border-brand-warm/30 shadow-sm">
+          <h3 class="text-xl lg:text-2xl font-bold mb-4 flex items-center gap-2 text-brand-dark">
+            <i class="fa-solid fa-circle-question text-brand-accent"></i> Preguntas Frecuentes
+          </h3>
+          <div class="space-y-3">
+            <details class="group bg-brand-card rounded-2xl p-4 border border-brand-warm/20 shadow-xs">
+              <summary class="font-semibold text-sm lg:text-base cursor-pointer flex justify-between items-center text-brand-dark">
+                ¿Cuáles son los métodos de pago disponibles?
+                <i class="fa-solid fa-chevron-down text-xs text-brand-accent transition-transform group-open:rotate-180"></i>
+              </summary>
+              <p class="text-xs lg:text-sm text-brand-warm mt-3 leading-relaxed font-normal">Aceptamos efectivo, transferencias bancarias directas, tarjetas de crédito/débito y pagos móviles al momento de la entrega.</p>
+            </details>
+
+            <details class="group bg-brand-card rounded-2xl p-4 border border-brand-warm/20 shadow-xs">
+              <summary class="font-semibold text-sm lg:text-base cursor-pointer flex justify-between items-center text-brand-dark">
+                ¿Cuánto tarda el envío a domicilio?
+                <i class="fa-solid fa-chevron-down text-xs text-brand-accent transition-transform group-open:rotate-180"></i>
+              </summary>
+              <p class="text-xs lg:text-sm text-brand-warm mt-3 leading-relaxed font-normal">El tiempo estimado promedio es de 20 a 35 minutos, dependiendo de la distancia dentro de nuestra zona de cobertura urbana.</p>
+            </details>
+
+            <details class="group bg-brand-card rounded-2xl p-4 border border-brand-warm/20 shadow-xs">
+              <summary class="font-semibold text-sm lg:text-base cursor-pointer flex justify-between items-center text-brand-dark">
+                ¿Tienen opciones sin azúcar o vegetales?
+                <i class="fa-solid fa-chevron-down text-xs text-brand-accent transition-transform group-open:rotate-180"></i>
+              </summary>
+              <p class="text-xs lg:text-sm text-brand-warm mt-3 leading-relaxed font-normal">¡Sí! Contamos con leche de almendras y avena sin costo adicional, además de endulzantes naturales como stevia y jarabe sin azúcar.</p>
+            </details>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- COLUMNA DERECHA: ASISTENTE IA Y CARRITO PERMANENTE EN ESCRITORIO -->
+      <div class="space-y-8 lg:sticky lg:top-24">
+        
+        <!-- WIDGET GEMINI IA -->
+        <section class="bg-brand-card border border-brand-warm/30 rounded-3xl p-5 lg:p-6 shadow-md">
+          <div class="flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-sparkles text-2xl text-brand-accent"></i>
+            <h3 class="text-lg lg:text-xl font-bold text-brand-dark">Recomendador con IA (Gemini)</h3>
+          </div>
+          <p class="text-xs lg:text-sm text-brand-warm mb-4 font-normal">¿No sabes qué pedir? Cuéntame tu antojo o el clima actual y te recomendaré la bebida ideal.</p>
+
+          <div class="flex gap-2">
+            <input type="text" id="ai-input" placeholder="Ej: Algo dulce para la tarde..." class="w-full bg-white border border-brand-warm/30 rounded-xl px-3.5 py-2.5 text-xs lg:text-sm text-brand-dark focus:outline-none focus:border-brand-accent">
+            <button onclick="askGemini()" class="bg-brand-accent hover:bg-brand-accent/90 text-white font-bold px-4 py-2.5 rounded-xl text-xs lg:text-sm transition flex items-center gap-1 shadow whitespace-nowrap">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Pedir
+            </button>
+          </div>
+
+          <div id="ai-response" class="mt-4 p-4 bg-white/80 rounded-2xl border border-brand-warm/20 text-xs lg:text-sm text-brand-dark hidden font-normal">
+            <!-- Respuesta IA -->
+          </div>
+        </section>
+
+        <!-- PANEL DE CARRITO EN ESCRITORIO -->
+        <section class="hidden lg:block bg-brand-card border border-brand-warm/30 rounded-3xl p-6 shadow-md">
+          <div class="flex justify-between items-center pb-4 border-b border-brand-warm/30">
+            <h3 class="font-bold text-xl text-brand-dark flex items-center gap-2">
+              <i class="fa-solid fa-shopping-bag text-brand-accent"></i> Tu Pedido
+            </h3>
+            <span id="cart-count-desktop" class="text-xs text-brand-warm font-semibold">0 ítems</span>
+          </div>
+
+          <div id="cart-items-desktop" class="my-4 space-y-3 max-h-[40vh] overflow-y-auto pr-1">
+            <!-- Items del carrito -->
+          </div>
+
+          <div class="border-t border-brand-warm/30 pt-4 space-y-4">
+            <div class="flex justify-between font-bold text-lg">
+              <span class="text-brand-dark">Total:</span>
+              <span id="cart-total-desktop" class="text-brand-accent">$0.00</span>
+            </div>
+            <button onclick="checkoutOrder()" class="w-full py-3.5 bg-brand-accent hover:bg-brand-accent/90 font-bold text-white rounded-2xl flex items-center justify-center gap-2 text-base shadow transition">
+              <i class="fa-solid fa-check-circle text-lg"></i> Hacer Pedido
+            </button>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-8 border-t border-brand-warm/20 text-xs lg:text-sm text-brand-warm space-y-1">
+    <p class="font-bold text-brand-dark">Aroma & Mix © 2026</p>
+    <p class="font-normal">Abierto todos los días: 7:00 AM - 10:00 PM</p>
+  </footer>
+
+  <!-- DRAWER CARRITO PARA MÓVIL -->
+  <div id="cart-drawer" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-end">
+    <div class="w-full max-w-xs bg-brand-bone h-full p-4 flex flex-col justify-between border-l border-brand-warm/35 shadow-2xl">
+      <div>
+        <div class="flex justify-between items-center pb-3 border-b border-brand-warm/30">
+          <h3 class="font-bold text-xl text-brand-dark">Tu Pedido</h3>
+          <button onclick="toggleCart()" class="text-brand-warm hover:text-brand-dark text-xl">&times;</button>
+        </div>
+        <div id="cart-items-mobile" class="mt-4 space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+          <!-- Items del carrito -->
+        </div>
+      </div>
+
+      <div class="border-t border-brand-warm/30 pt-3 space-y-3">
+        <div class="flex justify-between font-bold text-base">
+          <span class="text-brand-dark">Total:</span>
+          <span id="cart-total-mobile" class="text-brand-accent">$0.00</span>
+        </div>
+        <button onclick="checkoutOrder()" class="w-full py-3 bg-brand-accent hover:bg-brand-accent/90 font-bold text-white rounded-xl flex items-center justify-center gap-2 text-sm shadow transition">
+          <i class="fa-solid fa-check-circle text-lg"></i> Hacer Pedido
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICACIÓN -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-brand-accent text-white px-5 py-3 rounded-2xl font-bold text-xs lg:text-sm shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
+    <i class="fa-solid fa-circle-check text-lg"></i>
+    <span id="toast-message">¡Pedido realizado con éxito!</span>
+  </div>
+
+  <script>
+    const products = [
+      { id: 1, name: "Espresso Doble", type: "caliente", price: 3.50, status: "disponible", img: "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=400", desc: "Intenso y estructurado." },
+      { id: 2, name: "Iced Caramel Latte", type: "fria", price: 5.00, status: "disponible", img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=400", desc: "Espresso helado con leche y caramelo." },
+      { id: 3, name: "Cappuccino Vainilla", type: "caliente", price: 4.50, status: "disponible", img: "https://images.unsplash.com/photo-1534778101976-62847782c213?w=400", desc: "Espuma cremosa con toque de vainilla." },
+      { id: 4, name: "Cold Brew Tonic", type: "fria", price: 5.50, status: "agotado", img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=400", desc: "Extracción fría con agua tónica." }
+    ];
+
+    let cart = [];
+
+    function renderProducts(items) {
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = items.map(p => `
+        <div class="bg-brand-card border border-brand-warm/30 rounded-2xl p-4 flex gap-4 shadow-xs ${p.status === 'agotado' ? 'opacity-65' : ''}">
+          <img src="${p.img}" alt="${p.name}" class="w-24 h-24 lg:w-28 lg:h-28 object-cover rounded-xl border border-brand-warm/20">
+          <div class="flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start gap-2">
+                <h4 class="font-bold text-base lg:text-lg text-brand-dark">${p.name}</h4>
+                ${p.status === 'disponible' 
+                  ? '<span class="text-[10px] lg:text-xs bg-emerald-500/20 text-emerald-700 px-2 py-0.5 rounded-full font-bold border border-emerald-500/30">Disponible</span>'
+                  : '<span class="text-[10px] lg:text-xs bg-brand-dark/10 text-brand-warm px-2 py-0.5 rounded-full font-bold border border-brand-warm/30">Agotado</span>'}
+              </div>
+              <p class="text-xs lg:text-sm text-brand-warm mt-1 line-clamp-2 font-normal">${p.desc}</p>
+            </div>
+            <div class="flex justify-between items-center mt-3">
+              <span class="font-bold text-brand-accent text-lg lg:text-xl">$${p.price.toFixed(2)}</span>
+              <button 
+                onclick="addToCart(${p.id})" 
+                ${p.status === 'agotado' ? 'disabled' : ''}
+                class="px-4 py-1.5 bg-brand-accent hover:bg-brand-accent/90 text-white font-bold text-xs lg:text-sm rounded-xl transition disabled:bg-brand-warm/30 disabled:text-brand-warm disabled:cursor-not-allowed shadow-xs">
+                ${p.status === 'disponible' ? 'Agregar' : 'Agotado'}
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterCategory(cat, btn) {
+      document.querySelectorAll('.cat-btn').forEach(b => {
+        b.className = 'cat-btn px-5 py-2.5 bg-brand-card text-brand-dark font-medium text-sm lg:text-base rounded-full whitespace-nowrap border border-brand-warm/30 hover:bg-brand-card/80';
+      });
+      btn.className = 'cat-btn px-5 py-2.5 bg-brand-accent text-white font-bold text-sm lg:text-base rounded-full whitespace-nowrap shadow-sm';
+
+      if (cat === 'all') renderProducts(products);
+      else renderProducts(products.filter(p => p.type === cat));
+    }
+
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      if (product && product.status === 'disponible') {
+        cart.push(product);
+        updateCartUI();
+        showToast(`Agregado: ${product.name}`);
+      }
+    }
+
+    function addPromoToCart() {
+      cart.push({ id: 99, name: "Combo Mañanero (Promo)", price: 8.50 });
+      updateCartUI();
+      showToast('Promo agregada al carrito');
+    }
+
+    function updateCartUI() {
+      const badgeMobile = document.getElementById('cart-badge-mobile');
+      badgeMobile.innerText = cart.length;
+      badgeMobile.classList.toggle('hidden', cart.length === 0);
+
+      document.getElementById('cart-count-desktop').innerText = `${cart.length} ítems`;
+
+      const cartHTML = cart.length === 0 
+        ? `<p class="text-xs lg:text-sm text-brand-warm text-center py-4 font-normal">Tu carrito está vacío.</p>`
+        : cart.map((item, idx) => `
+          <div class="flex justify-between items-center text-xs lg:text-sm bg-white p-3 rounded-xl border border-brand-warm/20 shadow-xs">
+            <div>
+              <p class="font-bold text-brand-dark">${item.name}</p>
+              <p class="text-brand-accent font-bold">$${item.price.toFixed(2)}</p>
+            </div>
+            <button onclick="removeFromCart(${idx})" class="text-red-500 hover:text-red-700 font-bold px-2 py-1 text-base">&times;</button>
+          </div>
+        `).join('');
+
+      document.getElementById('cart-items-mobile').innerHTML = cartHTML;
+      document.getElementById('cart-items-desktop').innerHTML = cartHTML;
+
+      const total = cart.reduce((acc, curr) => acc + curr.price, 0);
+      document.getElementById('cart-total-mobile').innerText = `$${total.toFixed(2)}`;
+      document.getElementById('cart-total-desktop').innerText = `$${total.toFixed(2)}`;
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartUI();
+    }
+
+    function toggleCart() {
+      document.getElementById('cart-drawer').classList.toggle('hidden');
+    }
+
+    function checkoutOrder() {
+      if (cart.length === 0) {
+        showToast('El carrito está vacío');
+        return;
+      }
+      showToast('¡Pedido realizado con éxito!');
+      cart = [];
+      updateCartUI();
+      if (!document.getElementById('cart-drawer').classList.contains('hidden')) {
+        toggleCart();
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    function askGemini() {
+      const input = document.getElementById('ai-input').value;
+      const resContainer = document.getElementById('ai-response');
+      if (!input.trim()) return;
+
+      resContainer.classList.remove('hidden');
+      resContainer.innerHTML = `<p class="text-brand-accent animate-pulse font-bold">✨ Consultando con la IA...</p>`;
+
+      setTimeout(() => {
+        resContainer.innerHTML = `
+          <p class="font-bold text-brand-accent mb-1">💡 Recomendación para ti:</p>
+          <p class="text-brand-dark font-normal">Te sugerimos el <strong>Iced Caramel Latte</strong>. Es fresco, cremoso y perfecto para tu antojo.</p>
+        `;
+      }, 1000);
+    }
+
+    renderProducts(products);
+  </script>
+</body>
+</html>
